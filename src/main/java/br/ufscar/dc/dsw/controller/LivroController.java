@@ -106,7 +106,7 @@ public class LivroController extends HttpServlet {
         String titulo = request.getParameter("titulo");
         String autor = request.getParameter("autor");
         Integer ano = Integer.parseInt(request.getParameter("ano"));
-        Float preco = Float.parseFloat(request.getParameter("preco"));
+        Float preco = parsePreco(request.getParameter("preco"));
 
         Long editoraID = Long.parseLong(request.getParameter("editora"));
         Editora editora = new EditoraDAO().get(editoraID);
@@ -123,7 +123,7 @@ public class LivroController extends HttpServlet {
         String titulo = request.getParameter("titulo");
         String autor = request.getParameter("autor");
         Integer ano = Integer.parseInt(request.getParameter("ano"));
-        Float preco = Float.parseFloat(request.getParameter("preco"));
+        Float preco = parsePreco(request.getParameter("preco"));
 
         Long editoraID = Long.parseLong(request.getParameter("editora"));
         Editora editora = new EditoraDAO().get(editoraID);
@@ -139,5 +139,21 @@ public class LivroController extends HttpServlet {
         Livro livro = new Livro(id);
         dao.delete(livro);
         response.sendRedirect("lista");
+    }
+
+    private Float parsePreco(String preco) {
+        String valor = preco.trim();
+
+        if (valor.contains(",") && valor.contains(".")) {
+            if (valor.lastIndexOf(",") > valor.lastIndexOf(".")) {
+                valor = valor.replace(".", "").replace(",", ".");
+            } else {
+                valor = valor.replace(",", "");
+            }
+        } else if (valor.contains(",")) {
+            valor = valor.replace(",", ".");
+        }
+
+        return Float.parseFloat(valor);
     }
 }
